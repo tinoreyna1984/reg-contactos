@@ -1,17 +1,21 @@
+/* eslint-disable no-self-assign */
 //import logo from "./logo.svg";
 import { useState } from "react";
 import { doPost, useObtenerContactos } from "./Api";
 import "./App.css";
 
 function App() {
-  const contactos = useObtenerContactos();
+  let contactos = useObtenerContactos();
+  
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [fono, setFono] = useState('');
   const [email, setEmail] = useState('');
   const [fecha_nac, setFechaNac] = useState('');
+  //const [flag, setflag] = useState(false);
 
 
+  // formulario
   const controlaEnvio = (e) => {
     e.preventDefault();
     const datos = doPost({
@@ -21,13 +25,15 @@ function App() {
       email: email,
       fecha_nac: fecha_nac
     });
-    //console.log(nombre,apellido,fono,email,fecha_nac);
     console.log(datos)
+    window.location.href = window.location.href;
+    //setflag(true);
     e.target.reset();
-    //setDatos()
   };
 
-  // Tabla
+  /* const eventoClick = (e) => {
+    window.location.href = window.location.href;
+  } */
 
   return (
     <div
@@ -103,6 +109,9 @@ function App() {
           </form>
         </div>
         <div className="col">
+        {/* <button type="button" className="btn btn-primary" onClick={eventoClick}>
+            Refrescar contactos
+        </button> */}
           <table className="table">
             <thead>
               <tr>
