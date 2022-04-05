@@ -1,10 +1,33 @@
 //import logo from "./logo.svg";
-import { useObtenerContactos } from "./Api";
+import { useState } from "react";
+import { doPost, useObtenerContactos } from "./Api";
 import "./App.css";
 
 function App() {
   const contactos = useObtenerContactos();
-  //console.log(contactos);
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [fono, setFono] = useState('');
+  const [email, setEmail] = useState('');
+  const [fecha_nac, setFechaNac] = useState('');
+
+
+  const controlaEnvio = (e) => {
+    e.preventDefault();
+    const datos = doPost({
+      nombre: nombre,
+      apellido: apellido,
+      fono: fono,
+      email: email,
+      fecha_nac: fecha_nac
+    });
+    //console.log(nombre,apellido,fono,email,fecha_nac);
+    console.log(datos)
+    e.target.reset();
+    //setDatos()
+  };
+
+  // Tabla
 
   return (
     <div
@@ -13,7 +36,7 @@ function App() {
     >
       <div className="row">
         <div className="col">
-          <form>
+          <form onSubmit={controlaEnvio}>
             <div className="mb-3">
               <label htmlFor="nombre" className="form-label">
                 Nombre
@@ -23,6 +46,7 @@ function App() {
                 className="form-control"
                 id="nombre"
                 required
+                onChange={(e) => {setNombre(e.target.value)}}
               />
             </div>
             <div className="mb-3">
@@ -34,6 +58,7 @@ function App() {
                 className="form-control"
                 id="apellido"
                 required
+                onChange={(e) => {setApellido(e.target.value)}}
               />
             </div>
             <div className="mb-3">
@@ -41,23 +66,34 @@ function App() {
                 Fono
               </label>
               <input
-                type="number"
+                type="text"
                 className="form-control"
                 id="fono"
                 required
+                onChange={(e) => {setFono(e.target.value)}}
               />
             </div>
             <div className="mb-3">
               <label htmlFor="correo" className="form-label">
                 Email
               </label>
-              <input type="email" className="form-control" id="correo" />
+              <input
+                type="text"
+                className="form-control"
+                id="email"
+                onChange={(e) => {setEmail(e.target.value)}}
+              />
             </div>
             <div className="mb-3">
               <label htmlFor="fechaNac" className="form-label">
                 Fecha de nacimiento (dd-mm-aaaa)
               </label>
-              <input type="text" className="form-control" id="fechaNac" />
+              <input
+                type="text"
+                className="form-control"
+                id="fecha_nac"
+                onChange={(e) => {setFechaNac(e.target.value)}}
+              />
             </div>
             <div className="mb-3">
               <button type="submit" className="btn btn-primary">

@@ -17,4 +17,17 @@ function useObtenerContactos(){
   return items;
 }
 
-export {useObtenerContactos}
+function doPost(data) {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(data),
+  };
+  console.log(data)
+  const res = fetch(URL, requestOptions)
+    .then((response) => response.statusText)
+    .catch((error) => console.log(error));
+  return res;
+}
+
+export {useObtenerContactos, doPost}
