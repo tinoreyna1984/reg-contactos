@@ -1,30 +1,66 @@
 /* eslint-disable no-self-assign */
 //import logo from "./logo.svg";
 import { useState } from "react";
-import { URL, doPost, useObtenerContactos } from "./Api";
+import { doPost, doGetOne, useObtenerContactos, doPut, doDelete } from "./Api";
 import "./App.css";
 
 function App() {
   let contactos = useObtenerContactos();
+  const [id, setId] = useState("");
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [fono, setFono] = useState("");
   const [email, setEmail] = useState("");
   const [fecha_nac, setFechaNac] = useState("");
-  //const [flag, setflag] = useState(false);
+  const [flag, setFlag] = useState(false);
+  const btnAgregar = document.getElementById("add");
+  const btnModificar = document.getElementById("update");
 
   // formulario
   const controlaEnvio = (e) => {
     e.preventDefault();
-    const datos = doPost({
-      nombre: nombre,
-      apellido: apellido,
-      fono: fono,
-      email: email,
-      fecha_nac: fecha_nac,
-    });
-    console.log(datos);
-    window.location.href = window.location.href;
+    console.log("flag: ", flag);
+    if (!flag) {
+      if (nombre.length > 0 && apellido.length > 0 && fono.length > 0) {
+        const datos = doPost({
+          nombre: nombre,
+          apellido: apellido,
+          fono: fono,
+          email: email,
+          fecha_nac: fecha_nac,
+        });
+        //console.log('long nombre: ', nombre.length)
+        console.log(datos);
+      } else {
+        alert(
+          "Los campos nombre, apellido y teléfono son obligatorios. Pruebe nuevamente"
+        );
+      }
+    } else {
+      //console.log("flag en true");
+      const nombre = document.getElementById("nombre").value;
+      const apellido = document.getElementById("apellido").value;
+      const fono = document.getElementById("fono").value;
+      const email = document.getElementById("email").value;
+      const fecha_nac = document.getElementById("fecha_nac").value;
+      //console.log(nombre, apellido, fono, email, fecha_nac);
+      if (nombre.length > 0 && apellido.length > 0 && fono.length > 0) {
+        const datos = doPut(id, {
+          nombre: nombre,
+          apellido: apellido,
+          fono: fono,
+          email: email,
+          fecha_nac: fecha_nac,
+        });
+        //console.log('long nombre: ', nombre.length)
+        console.log(datos);
+      } else {
+        alert(
+          "Los campos nombre, apellido y teléfono son obligatorios. Pruebe nuevamente"
+        );
+      }
+    }
+    //window.location.href = window.location.href;
     e.target.reset();
   };
 
@@ -32,8 +68,7 @@ function App() {
   const modificar = async (id) => {
     console.log(id);
     try {
-      const res = await fetch(`${URL}${id}`, { method: "GET" });
-      const item = await res.json();
+      const item = await doGetOne(id);
       console.log(item);
       const nombre = document.getElementById("nombre");
       const apellido = document.getElementById("apellido");
@@ -45,10 +80,24 @@ function App() {
       fono.value = item.fono;
       email.value = item.email;
       fecha_nac.value = item.fecha_nac;
+      btnAgregar.disabled = true;
+      btnModificar.disabled = false;
+      setId(id);
+      setNombre(nombre);
+      setApellido(apellido);
+      setFono(fono);
+      setEmail(id);
+      setFechaNac(fecha_nac);
+      setFlag(true);
     } catch (error) {
       console.log(error);
     }
-    console.log(nombre);
+  };
+
+  const eliminar = async (id) => {
+    const estado = await doDelete(id);
+    console.log(estado);
+    window.location.href = window.location.href;
   };
 
   return (
@@ -58,7 +107,7 @@ function App() {
     >
       <div className="row">
         <div className="col border rounded">
-          <h1>Agregar contacto</h1>
+          <h4>Agregar/modificar contacto</h4>
           <form onSubmit={controlaEnvio}>
             <div className="mb-3">
               <label htmlFor="nombre" className="form-label">
@@ -133,14 +182,19 @@ function App() {
                 Agregar
               </button>
               <br />
-              <button type="submit" className="btn btn-primary" id="update">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                id="update"
+                disabled
+              >
                 Enviar modificación
               </button>
             </div>
           </form>
         </div>
         <div className="col border rounded">
-          <h1>Lista de contactos</h1>
+          <h4>Lista de contactos</h4>
           <table className="table">
             <thead>
               <tr>
@@ -163,13 +217,20 @@ function App() {
                   <td>{contacto.fecha_nac}</td>
                   <td>
                     <button
-                      key={contacto.id}
-                      type="submit"
+                      type="button"
                       className="btn btn-secondary"
                       onClick={() => modificar(contacto.id)}
                       id="setreg"
                     >
                       Modificar
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => eliminar(contacto.id)}
+                      id="delreg"
+                    >
+                      Eliminar
                     </button>
                   </td>
                 </tr>

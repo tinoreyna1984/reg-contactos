@@ -30,18 +30,34 @@ function doPost(data) {
   return res;
 }
 
-function doGetOne(id){
-  const res = fetch(`${URL}${id}`, {method: "GET"})
-    .then((response) => response.json())
-    .catch((error) => console.log(error));
-  return res;
+async function doGetOne(id){
+  try {
+    const res = await fetch(`${URL}${id}`, { method: "GET" });
+    const item = await res.json();
+    return item;
+  } catch (error) {
+    console.log(error)
+  }
 }
+
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
 
 function doPut(id, data){
   const requestOptions = {
     method: "PUT",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data, getCircularReplacer()),
   };
   console.log(data)
   const res = fetch(`${URL}${id}`, requestOptions)
@@ -50,4 +66,14 @@ function doPut(id, data){
   return res;
 }
 
-export {URL, useObtenerContactos, doPost, doGetOne, doPut}
+async function doDelete(id){
+  try {
+    const res = await fetch(`${URL}${id}`, { method: "DELETE" });
+    const statusText = await res.statusText;
+    return statusText;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export {URL, useObtenerContactos, doPost, doGetOne, doPut, doDelete}
