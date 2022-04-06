@@ -43,7 +43,7 @@ function App() {
       const fono = document.getElementById("fono").value;
       const email = document.getElementById("email").value;
       const fecha_nac = document.getElementById("fecha_nac").value;
-      //console.log(nombre, apellido, fono, email, fecha_nac);
+      console.log(id, nombre, apellido, fono, email, fecha_nac);
       if (nombre.length > 0 && apellido.length > 0 && fono.length > 0) {
         const datos = doPut(id, {
           nombre: nombre,

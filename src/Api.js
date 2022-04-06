@@ -40,7 +40,7 @@ async function doGetOne(id){
   }
 }
 
-const getCircularReplacer = () => {
+/* const getCircularReplacer = () => {
   const seen = new WeakSet();
   return (key, value) => {
     if (typeof value === "object" && value !== null) {
@@ -51,13 +51,13 @@ const getCircularReplacer = () => {
     }
     return value;
   };
-};
+}; */
 
 function doPut(id, data){
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data, getCircularReplacer()),
+    body: JSON.stringify(data),
   };
   console.log(data)
   const res = fetch(`${URL}${id}`, requestOptions)
