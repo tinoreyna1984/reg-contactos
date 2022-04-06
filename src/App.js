@@ -60,7 +60,7 @@ function App() {
         );
       }
     }
-    //window.location.href = window.location.href;
+    window.location.href = window.location.href;
     e.target.reset();
   };
 
