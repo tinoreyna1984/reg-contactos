@@ -1,19 +1,17 @@
 /* eslint-disable no-self-assign */
 //import logo from "./logo.svg";
 import { useState } from "react";
-import { doPost, useObtenerContactos } from "./Api";
+import { URL, doPost, useObtenerContactos } from "./Api";
 import "./App.css";
 
 function App() {
   let contactos = useObtenerContactos();
-  
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [fono, setFono] = useState('');
-  const [email, setEmail] = useState('');
-  const [fecha_nac, setFechaNac] = useState('');
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [fono, setFono] = useState("");
+  const [email, setEmail] = useState("");
+  const [fecha_nac, setFechaNac] = useState("");
   //const [flag, setflag] = useState(false);
-
 
   // formulario
   const controlaEnvio = (e) => {
@@ -23,17 +21,35 @@ function App() {
       apellido: apellido,
       fono: fono,
       email: email,
-      fecha_nac: fecha_nac
+      fecha_nac: fecha_nac,
     });
-    console.log(datos)
+    console.log(datos);
     window.location.href = window.location.href;
-    //setflag(true);
     e.target.reset();
   };
 
-  /* const eventoClick = (e) => {
-    window.location.href = window.location.href;
-  } */
+  // tabla
+  const modificar = async (id) => {
+    console.log(id);
+    try {
+      const res = await fetch(`${URL}${id}`, { method: "GET" });
+      const item = await res.json();
+      console.log(item);
+      const nombre = document.getElementById("nombre");
+      const apellido = document.getElementById("apellido");
+      const fono = document.getElementById("fono");
+      const email = document.getElementById("email");
+      const fecha_nac = document.getElementById("fecha_nac");
+      nombre.value = item.nombre;
+      apellido.value = item.apellido;
+      fono.value = item.fono;
+      email.value = item.email;
+      fecha_nac.value = item.fecha_nac;
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(nombre);
+  };
 
   return (
     <div
@@ -41,7 +57,8 @@ function App() {
       style={{ paddingTop: "60px" }}
     >
       <div className="row">
-        <div className="col">
+        <div className="col border rounded">
+          <h1>Agregar contacto</h1>
           <form onSubmit={controlaEnvio}>
             <div className="mb-3">
               <label htmlFor="nombre" className="form-label">
@@ -52,7 +69,9 @@ function App() {
                 className="form-control"
                 id="nombre"
                 required
-                onChange={(e) => {setNombre(e.target.value)}}
+                onChange={(e) => {
+                  setNombre(e.target.value);
+                }}
               />
             </div>
             <div className="mb-3">
@@ -64,7 +83,9 @@ function App() {
                 className="form-control"
                 id="apellido"
                 required
-                onChange={(e) => {setApellido(e.target.value)}}
+                onChange={(e) => {
+                  setApellido(e.target.value);
+                }}
               />
             </div>
             <div className="mb-3">
@@ -76,7 +97,9 @@ function App() {
                 className="form-control"
                 id="fono"
                 required
-                onChange={(e) => {setFono(e.target.value)}}
+                onChange={(e) => {
+                  setFono(e.target.value);
+                }}
               />
             </div>
             <div className="mb-3">
@@ -87,7 +110,9 @@ function App() {
                 type="text"
                 className="form-control"
                 id="email"
-                onChange={(e) => {setEmail(e.target.value)}}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
               />
             </div>
             <div className="mb-3">
@@ -98,20 +123,24 @@ function App() {
                 type="text"
                 className="form-control"
                 id="fecha_nac"
-                onChange={(e) => {setFechaNac(e.target.value)}}
+                onChange={(e) => {
+                  setFechaNac(e.target.value);
+                }}
               />
             </div>
             <div className="mb-3">
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary" id="add">
                 Agregar
+              </button>
+              <br />
+              <button type="submit" className="btn btn-primary" id="update">
+                Enviar modificación
               </button>
             </div>
           </form>
         </div>
-        <div className="col">
-        {/* <button type="button" className="btn btn-primary" onClick={eventoClick}>
-            Refrescar contactos
-        </button> */}
+        <div className="col border rounded">
+          <h1>Lista de contactos</h1>
           <table className="table">
             <thead>
               <tr>
@@ -123,7 +152,7 @@ function App() {
                 <th scope="col">FechaNac</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="contactos">
               {contactos.map((contacto) => (
                 <tr key={contacto.id}>
                   <th scope="row">{contacto.id}</th>
@@ -133,7 +162,13 @@ function App() {
                   <td>{contacto.email}</td>
                   <td>{contacto.fecha_nac}</td>
                   <td>
-                    <button type="submit" className="btn btn-secondary">
+                    <button
+                      key={contacto.id}
+                      type="submit"
+                      className="btn btn-secondary"
+                      onClick={() => modificar(contacto.id)}
+                      id="setreg"
+                    >
                       Modificar
                     </button>
                   </td>

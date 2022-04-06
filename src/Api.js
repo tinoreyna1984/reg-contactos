@@ -30,4 +30,24 @@ function doPost(data) {
   return res;
 }
 
-export {useObtenerContactos, doPost}
+function doGetOne(id){
+  const res = fetch(`${URL}${id}`, {method: "GET"})
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+  return res;
+}
+
+function doPut(id, data){
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(data),
+  };
+  console.log(data)
+  const res = fetch(`${URL}${id}`, requestOptions)
+    .then((response) => response.statusText)
+    .catch((error) => console.log(error));
+  return res;
+}
+
+export {URL, useObtenerContactos, doPost, doGetOne, doPut}
