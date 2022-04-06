@@ -239,6 +239,15 @@ function App() {
           </table>
         </div>
       </div>
+      <div className="row">
+        <a
+          href="https://api-contactos-django.herokuapp.com/contacto/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Aquí está el API REST Django
+        </a>
+      </div>
     </div>
   );
 }
